@@ -1,0 +1,24 @@
+from collections import defaultdict
+
+# Adjacency List Representation
+# adjLists = defaultdict(lambda: defaultdict(lambda: 0))
+# adjLists[0] = []
+# adjLists[1] = [2,3]
+# adjLists[2] = []
+# adjLists[3] = [1,4,5]
+# adjLists[4] = [3]
+# adjLists[5] = [3]
+
+# n = len(adjLists)
+# for v in range(1,n):
+#     print(v, ":", adjLists[v])
+
+matrix = [[]]
+matrix[0] = [0,1,1,0,0]
+matrix[1] = [1,0,0,0,0]
+matrix[2] = [1,0,0,1,1]
+matrix[3] = [0,0,1,0,0]
+matrix[4] = [0,0,1,0,0]
+
+print(matrix)
+
