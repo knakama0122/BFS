@@ -18,10 +18,10 @@ class vector:
             self.color.append(-1)
             self.distance.append(len(Matrix))
             self.parent.append(-1)
-        for x in range(Matrix): #Changes values at source index to initial state
-             if( x == source):
-                 self.color[x] = 0
-                 self.distance = 0
+        for x in Matrix: #Changes values at source index to initial state
+             if(Matrix.index(x) == source):
+                 self.color[Matrix.index(x)] = 0
+                 self.distance[Matrix.index(x)] = 0
 
     def print(self):
         print(self.color)
@@ -29,5 +29,5 @@ class vector:
         print(self.parent)
     
 vector = vector()
-vector.initialize(Matrix, 0)
+vector.initialize(Matrix, 3)
 vector.print()
