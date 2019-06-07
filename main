@@ -1,5 +1,5 @@
-v = 5
-Matrix = [[0 for x in range(v)] for y in range(v)]
+V = [0,1,2,3,4]
+Matrix = [[0 for x in range(len(V))] for y in range(len(V))]
 
 Matrix[0] = [0,1,1,0,0]
 Matrix[1] = [1,0,0,0,0]
@@ -9,25 +9,65 @@ Matrix[4] = [0,0,1,0,0]
 
 class vector:
     def __init__(self):
-        self.color = []
-        self.distance = []
-        self.parent = []
- 
+        self.color = [] #0 is for white, 1 is for gray, and black is represented by -1
+        self.distance = [] # distance means the distance from point to the source
+        self.parent = [] #parent refers to the node it's parent is
+        self.value = [] #value stores the indicies of the next possible nodes
+        self.key = [] #key is used to determine the next node to select
+
     def initialize(self, Matrix, source):
         for x in Matrix: #Initalizes all values 
-            self.color.append(-1)
+            self.color.append(0) 
             self.distance.append(len(Matrix))
             self.parent.append(-1)
         for x in Matrix: #Changes values at source index to initial state
              if(Matrix.index(x) == source):
-                 self.color[Matrix.index(x)] = 0
+                 self.color[Matrix.index(x)] = 1
                  self.distance[Matrix.index(x)] = 0
+
+    def initialize2(self, vector)
+        for x in vector:
+            self.value.append(0)
+            self.key.append(0)
 
     def print(self):
         print(self.color)
         print(self.distance)
         print(self.parent)
     
-vector = vector()
-vector.initialize(Matrix, 3)
-vector.print()
+source = 0    
+C = vector() #Step 1
+C.initialize(Matrix, source) # Step 2
+
+
+for x in Matrix:
+    print(x)
+print()
+C.print()
+
+print()
+
+v = source # Step 3
+
+for i in range(len(C.color)):  #Step 4a
+    cond = (int)(Matrix[v][i] == 1) * (int)(C.color[i] == 0)
+    C.color[i] = cond * 1 + (1 - cond) * C.color[i]
+    C.parent[i] = cond * v + (1 - cond) * C.parent[i]
+    C.distance[i] = cond * (C.distance[v] + 1) + (1 - cond) * (C.distance[i])
+C.color[v] = -1 #Step 4b
+
+
+C2 = vector() #Step 5
+C2.initialize2(C)
+
+min = len(V) 
+for i in range(len(V)):
+    cond1 = (int)(C.color[i] == 1)
+    cond2 = (int)(C.distance[i] < min)
+    min = (cond1 * cond2 * C.distance[i]) + ((1 - cond1 * cond2) * min)
+for i in range(len(V)):
+    cond3 = (int)(C.distance[i] == min)
+    C2.value
+
+
+C.print()
