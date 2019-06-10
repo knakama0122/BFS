@@ -8,76 +8,88 @@ Matrix[3] = [0,0,1,0,0]
 Matrix[4] = [0,0,1,0,0]
 
 class vector:
-    def __init__(self):
-        self.color = [] #0 is for white, 1 is for gray, and black is represented by -1
-        self.distance = [] # distance means the distance from point to the source
-        self.parent = [] #parent refers to the node it's parent is
-        self.value = [] #value stores the indicies of the next possible nodes
-        self.key = [] #key is used to determine the next node to select
+    def __init__(self, num):
+        self.C = [[] for x in range(num)]
+        # self.color = [] #0 is for white, 1 is for gray, and black is represented by -1
+        # self.distance = [] # distance means the distance from point to the source
+        # self.parent = [] #parent refers to the node it's parent is
+        # self.value = [] #value stores the indicies of the next possible nodes
+        # self.key = [] #key is used to determine the next node to select
 
-    def initialize(self, Matrix, source):
-        for x in Matrix: #Initalizes all values 
-            self.color.append(0) 
-            self.distance.append(len(Matrix))
-            self.parent.append(-1)
-        for x in Matrix: #Changes values at source index to initial state
-             if(Matrix.index(x) == source):
-                 self.color[Matrix.index(x)] = 1
-                 self.distance[Matrix.index(x)] = 0
 
-    def initialize(self, Matrix, source):
+
+    def initialize(self, Matrix, source):#uses C[0] as colors, C[1] as distance, and C[2] as 
         for x in Matrix: #Initalizes all values 
-            self.C[0].append(0)    
-            self.C[1].append(len(Matrix))
+            self.C[0].append(0)    #uses C[0] as colors
+            self.C[1].append(len(Matrix)) 
             self.C[2].append(-1)
         for x in Matrix: #Changes values at source index to initial state
              if(Matrix.index(x) == source):
                  self.C[0][Matrix.index(x)] = 1
                  self.C[1][Matrix.index(x)] = 0
 
-    def initialize2(self, vector)
-        for x in vector:
-            self.value.append(0)
-            self.key.append(0)
+    def initialize2(self, vector):
+        for x in vector.C[0]:
+            self.C[0].append(0) #value
+            self.C[1].append(0) #key
+
+    def initialize3(self, vector):
+        for x in vector.C[0]:           
+            self.C[0].append(0) #cond1
+            self.C[1].append(0) #cond2
+            self.C[2].append(0) #cond3
 
     def print(self):
-        print(self.C[0])
-        print(self.C[1])
-        print(self.C[2])
+    	for x in self.C:
+	       print(x)
     
 source = 0    
-C = vector() #Step 1
+C = vector(3) #Step 1
 C.initialize(Matrix, source) # Step 2
 
 
 for x in Matrix:
     print(x)
-print()
-C.print()
-
-print()
+print("\n")
 
 v = source # Step 3
 
-for i in range(len(C.color)):  #Step 4a
-    cond = (int)(Matrix[v][i] == 1) * (int)(C.color[i] == 0)
-    C.color[i] = cond * 1 + (1 - cond) * C.color[i]
-    C.parent[i] = cond * v + (1 - cond) * C.parent[i]
-    C.distance[i] = cond * (C.distance[v] + 1) + (1 - cond) * (C.distance[i])
-C.color[v] = -1 #Step 4b
+for q in range(len(V)):
+    for i in range(len(C.C[0])):  #Step 4a
+        cond = (int)(Matrix[v][i] == 1) * (int)(C.C[0][i] == 0)
+        C.C[0][i] = cond * 1 + (1 - cond) * C.C[0][i]
+        C.C[2][i] = cond * v + (1 - cond) * C.C[2][i]
+        C.C[1][i] = cond * (C.C[1][v] + 1) + (1 - cond) * (C.C[1][i])
+    C.C[0][v] = -1 #Step 4b
 
+    print("C:")
+    C.print()
 
-C2 = vector() #Step 5
-C2.initialize2(C)
+    C2 = vector(2) #Step 5
+    C2.initialize2(C)
 
-min = len(V) 
-for i in range(len(V)):
-    cond1 = (int)(C.color[i] == 1)
-    cond2 = (int)(C.distance[i] < min)
-    min = (cond1 * cond2 * C.distance[i]) + ((1 - cond1 * cond2) * min)
-for i in range(len(V)):
-    cond3 = (int)(C.distance[i] == min)
-    C2.value
+    C3 = vector(3) #C3 contains the condition values
+    C3.initialize3(C)
 
+    min = len(V) 
+    for i in range(len(V)):
+        C3.C[0][i] = (int)(C.C[0][i] == 1) #checks if node is gray
+        C3.C[1][i] = (int)(C.C[1][i] < min) #checks if node is less than current minimum distance
+        min = (C3.C[0][i] * C3.C[1][i] * C.C[1][i]) + ((1 - C3.C[0][i] * C3.C[1][i]) * min)
+    for i in range(len(V)):
+        C3.C[2][i] = (int)(C.C[1][i] == min) #checks if node is equal to the minimum distance
+        C2.C[0][i] = C3.C[0][i] * C3.C[2][i] * i
+        C2.C[1][i] = C3.C[0][i] * C3.C[2][i] * (5 - i) #insert permuation function here
 
-C.print()
+    print("C2:")
+    C2.print()
+
+    max = 0
+    imax = 0
+    for i in range(len(V)):
+        cond = (int)(C2.C[1][i] > max)
+        max = cond * C2.C[1][i] + (1 - cond) * max
+        imax = cond * C2.C[0][i] + (1 - cond) * imax
+
+    v = C2.C[0][imax]
+    print("Next node: " + str(v))
