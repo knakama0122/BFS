@@ -25,15 +25,25 @@ class vector:
                  self.color[Matrix.index(x)] = 1
                  self.distance[Matrix.index(x)] = 0
 
+    def initialize(self, Matrix, source):
+        for x in Matrix: #Initalizes all values 
+            self.C[0].append(0)    
+            self.C[1].append(len(Matrix))
+            self.C[2].append(-1)
+        for x in Matrix: #Changes values at source index to initial state
+             if(Matrix.index(x) == source):
+                 self.C[0][Matrix.index(x)] = 1
+                 self.C[1][Matrix.index(x)] = 0
+
     def initialize2(self, vector)
         for x in vector:
             self.value.append(0)
             self.key.append(0)
 
     def print(self):
-        print(self.color)
-        print(self.distance)
-        print(self.parent)
+        print(self.C[0])
+        print(self.C[1])
+        print(self.C[2])
     
 source = 0    
 C = vector() #Step 1
