@@ -1,19 +1,14 @@
 import random
-X = [0,1,2,3,4]
+X = [0,1,2,3,4] #Verticies
 V = X.copy()
-Matrix = [[0 for x in range(len(V))] for y in range(len(V))]
-V.append(5)
-V.append(6)
-V.append(7)
-V.append(8)
-print("X", V)
+Matrix = [[0 for x in range(len(V))] for y in range(len(V))] #initialize matrix
 Matrix[0] = [0,1,1,0,0]
 Matrix[1] = [1,0,0,0,0]
 Matrix[2] = [1,0,0,1,1]
 Matrix[3] = [0,0,1,0,0]
 Matrix[4] = [0,0,1,0,0]
 
-def modify(Matrix):
+def modify(Matrix): #Use to implement fake nodes
     modified = Matrix.copy()
     fake = len(modified) - 1
     for x in range(fake + 1):
@@ -29,33 +24,38 @@ def modify(Matrix):
                 modified[x].append(1)
     return modified
         
-def permute(Matrix):
+def permute(Matrix): #permutes Matrix
     x = list(range(len(Matrix)))
+    p = random.random()
+    random.seed(p)
     random.shuffle(x)
-    return x
+    random.seed(p)
+    random.shuffle(Matrix)
+    for i in Matrix:
+        random.seed(p)
+        random.shuffle(i)
+    return x, Matrix
             
-
-Matrix = modify(Matrix)       
-for x in range(len(Matrix)):
-    print(x, Matrix[x])
-print()
-permutation = permute(Matrix)
-
-
 class vector:
     def __init__(self, num):
         self.C = [[] for x in range(num)]
-        # 0 is for white, 1 is for gray, and black is represented by -1
-        # distance means the distance from point to the source
-        # parent refers to the node it's parent is
-        # value stores the indicies of the next possible nodes
-        # key is used to determine the next node to select
-        # F is used to determine if a node is fake or not
+        # For vector C:
+            # 0 is for white, 1 is for gray, and black is represented by -1
+            # distance means the distance from point to the source
+            # parent refers to the node it's parent is
+        # For vector C2':
+            # value stores the indicies of the next possible nodes
+            # key is used to determine the next node to select
+        # For vector C3:
+            # C[0] holds cond1
+            # C[1] holds cond2
+            # C[2] holds cond3
+        # For vector F:
+            # F is used to determine if a node is fake or not
 
-
-    def initialize(self, Matrix, source):#uses C[0] as colors, C[1] as distance, and C[2] as 
+    def initialize(self, Matrix, source):#uses C[0] as colors, C[1] as distance, and C[2] as parent
         for x in Matrix: #Initalizes all values 
-            self.C[0].append(0)    #uses C[0] as colors
+            self.C[0].append(0)    
             self.C[1].append(len(Matrix)) 
             self.C[2].append(-1)
         for x in Matrix: #Changes values at source index to initial state
@@ -74,18 +74,28 @@ class vector:
             self.C[1].append(0) #cond2
             self.C[2].append(0) #cond3
 
-    def initialize4(self, permutation, X):
+    def initialize4(self, permutation, X): # C[x] is 0 if real node and 1 if fake
         for x in range(len(permutation)):
             if(permutation[x] < len(X)):         
                 self.C[0].append(0) 
             else:
                 self.C[0].append(1)
 
-    def print(self):
+    def print(self): #prints vector
     	for x in self.C:
 	       print(x)
-    
-source = 0    
+
+# Matrix = modify(Matrix)       
+print("X", V)
+for x in range(len(Matrix)): #prints graph input
+    print(x, Matrix[x])
+print()
+permutation, Matrix = permute(Matrix)
+print("X", permutation) #prints permutation of input
+for x in range(len(Matrix)):
+    print(permutation[x], Matrix[x])
+
+source = permutation.index(0)    
 C = vector(3) #Step 1
 C.initialize(Matrix, source) # Step 2
 
@@ -93,53 +103,55 @@ C2 = vector(2) #Used in step 5
 C2.initialize2(C)
 C3 = vector(3) #C3 contains the condition values
 C3.initialize3(C)
-F = vector(1)
-print(permutation)
+F = vector(1) #Used in step 5(for fake nodes)
 F.initialize4(permutation, X)
+# print(permutation)
+# F.print()
 
-F.print()
-# print("C:")
-# C.print()
-# v = source # Step 3
-# x = []
-# for i in range(len(V)):
-#     x.append(i + 1)
+print("C:")
+C.print()
+v = source # Step 3
+print("Next Node: ", source)
 
-# for q in range(len(V)):
-#     for i in range(len(C.C[0])):  #Step 4a
-#         cond = (int)(Matrix[v][i] == 1) * (int)(C.C[0][i] == 0)
-#         C.C[0][i] = cond * 1 + (1 - cond) * C.C[0][i]
-#         C.C[2][i] = cond * v + (1 - cond) * C.C[2][i]
-#         C.C[1][i] = cond * (C.C[1][v] + 1) + (1 - cond) * (C.C[1][i])
-#     C.C[0][v] = -1 #Step 4b
+x = [] #used in step 5 to generate key value
+for i in range(len(V)): #initialize to list of node indicies + 1
+    x.append(i + 1)
 
-#     print("C:")
-#     C.print()
+for q in range(len(V)): #repeated |V| times
+    for i in range(len(C.C[0])):  #Step 4.1
+        cond = (int)(Matrix[v][i] == 1) * (int)(C.C[0][i] == 0) #4.2
+        C.C[0][i] = cond * 1 + (1 - cond) * C.C[0][i] #4.3
+        C.C[2][i] = cond * v + (1 - cond) * C.C[2][i] #4.4
+        C.C[1][i] = cond * (C.C[1][v] + 1) + (1 - cond) * (C.C[1][i]) #4.5
+    C.C[0][v] = -1 #Step 4b
 
-#     min = len(V) #Step 5
-#     for i in range(len(V)):
-#         C3.C[0][i] = (int)(C.C[0][i] == 1) #checks if node is gray
-#         C3.C[1][i] = (int)(C.C[1][i] < min) #checks if node is less than current minimum distance
-#         min = (C3.C[0][i] * C3.C[1][i] * C.C[1][i]) + ((1 - C3.C[0][i] * C3.C[1][i]) * min)
+    print("C:")
+    C.print()
+
+    min = len(V) #Step 5
+    for i in range(len(V)): #5.2
+        C3.C[0][i] = (int)(C.C[0][i] == 1) #5.3 checks if node is gray
+        C3.C[1][i] = (int)(C.C[1][i] < min) #5.4 checks if node is less than current minimum distance
+        min = (C3.C[0][i] * C3.C[1][i] * C.C[1][i]) + ((1 - C3.C[0][i] * C3.C[1][i]) * min)#5.5 sets minimum to Min(min, C[i] distance)
  
-#     random.shuffle(x)
-#     for i in range(len(V)):
-#         C3.C[2][i] = (int)(C.C[1][i] == min) #checks if node is equal to the minimum distance
-#         C2.C[0][i] = C3.C[0][i] * C3.C[2][i] * i
-#         C2.C[1][i] = C3.C[0][i] * C3.C[2][i] * (x[i]) #insert permuation function here
-#     cond = (int)(min == len(X))
+    random.shuffle(x)#in place of function pi(i)
+    for i in range(len(V)):#5.6
+        C3.C[2][i] = (int)(C.C[1][i] == min) #5.7 checks if node is equal to the minimum distance
+        C2.C[0][i] = C3.C[0][i] * C3.C[2][i] * i #5.8
+        C2.C[1][i] = C3.C[0][i] * C3.C[2][i] * (x[i]) #5.9x[i] is used as random permutation
 
-#     for i in range(len(V)):
-#         C2.C[0][i] = C2.C[i] + cond * F.C[0][i] * i
-#         print("C2:")
-#     C2.print()
+    # cond = (int)(min == len(X)) #implement if using fake nodes
+    # for i in range(len(V)):
+    #     C2.C[0][i] = C2.C[][i] + cond * F.C[0][i] * i
+    #     print("C2:")
+    # C2.print()
 
-#     max = 0
-#     imax = 0
-#     for i in range(len(V)):
-#         cond = (int)(C2.C[1][i] > max)
-#         max = cond * C2.C[1][i] + (1 - cond) * max
-#         imax = cond * C2.C[0][i] + (1 - cond) * imax
-
-#     v = C2.C[0][imax]
-#     print("Next node: " + str(v))
+    max = 0 #5.10
+    imax = 0 #5.11 
+    for i in range(len(V)): #5.12
+        cond = (int)(C2.C[1][i] > max) #5.13
+        max = cond * C2.C[1][i] + (1 - cond) * max #5.14
+        imax = cond * C2.C[0][i] + (1 - cond) * imax #5.15
+    #5.16 would decrpyt the value of imax
+    v = C2.C[0][imax] #5.17
+    print("Next node: " + str(v))
