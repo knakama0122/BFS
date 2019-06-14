@@ -31,7 +31,8 @@ def permute(Matrix): #permutes Matrix
     for i in Matrix:
         random.seed(p)
         random.shuffle(i)
-    return x, Matrix
+    source = x.index(0)    
+    return source, x, Matrix
             
 class vector:
     def __init__(self, num):
@@ -50,15 +51,15 @@ class vector:
         # For vector F:
             # F is used to determine if a node is fake or not
 
-    def initialize(self, Matrix, source):#uses C[0] as colors, C[1] as distance, and C[2] as parent
-        for x in Matrix: #Initalizes all values 
+    def initialize(self, permutation, source):#uses C[0] as colors, C[1] as distance, and C[2] as parent
+        for x in permutation: #Initalizes all values 
             self.C[0].append(0)    
-            self.C[1].append(len(Matrix)) 
+            self.C[1].append(len(permutation)) 
             self.C[2].append(-1)
-        for x in Matrix: #Changes values at source index to initial state
-             if(Matrix.index(x) == source):
-                 self.C[0][Matrix.index(x)] = 1
-                 self.C[1][Matrix.index(x)] = 0
+        for x in permutation: #Changes values at source index to initial state
+             if(x == source):
+                 self.C[0][x] = 1
+                 self.C[1][x] = 0
 
     def initialize2(self, vector):
         for x in vector.C[0]:
@@ -87,12 +88,11 @@ print("X", V)
 for x in range(len(Matrix)): #prints graph input
     print(x, Matrix[x])
 print()
-permutation, Matrix = permute(Matrix)
+source, permutation, Matrix = permute(Matrix)
 print("X", permutation) #prints permutation of input
 for x in range(len(Matrix)):
     print(permutation[x], Matrix[x])
-
-source = permutation.index(0)    
+    
 C = vector(3) #Step 1
 C.initialize(Matrix, source) # Step 2
 
