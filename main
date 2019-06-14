@@ -1,9 +1,9 @@
 import random
 X = [0,1,2,3,4] #Verticies
-V = X.copy()
-Matrix = [[0 for x in range(len(V))] for y in range(len(V))] #initialize matrix
-X = [0,1,2,3,4] #Verticies
 E = [(0,1),(0,2),(2,3),(2,4)]
+
+Matrix = [[0 for x in range(len(V))] for y in range(len(V))] #initialize matrix
+V = X.copy()
 
 def modify(Matrix): #Use to implement fake nodes
     modified = Matrix.copy()
