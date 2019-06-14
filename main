@@ -1,9 +1,11 @@
 import random
 X = [0,1,2,3,4] #Verticies
 E = [(0,1),(0,2),(2,3),(2,4)]
-
-Matrix = [[0 for x in range(len(V))] for y in range(len(V))] #initialize matrix
 V = X.copy()
+Matrix = [[0 for x in range(len(V))] for y in range(len(V))] #initialize matrix
+for e in E:
+    Matrix[e[0]][e[1]] = 1
+    Matrix[e[1]][e[0]] = 1
 
 def modify(Matrix): #Use to implement fake nodes
     modified = Matrix.copy()
@@ -31,7 +33,7 @@ def permute(Matrix): #permutes Matrix
     for i in Matrix:
         random.seed(p)
         random.shuffle(i)
-    source = x.index(0)    
+    source = x[0]  
     return source, x, Matrix
             
 class vector:
@@ -57,9 +59,9 @@ class vector:
             self.C[1].append(len(permutation)) 
             self.C[2].append(-1)
         for x in permutation: #Changes values at source index to initial state
-             if(x == source):
-                 self.C[0][x] = 1
-                 self.C[1][x] = 0
+             if(x == permutation[source]):
+                 self.C[0][source] = 1
+                 self.C[1][source] = 0
 
     def initialize2(self, vector):
         for x in vector.C[0]:
@@ -92,6 +94,8 @@ source, permutation, Matrix = permute(Matrix)
 print("X", permutation) #prints permutation of input
 for x in range(len(Matrix)):
     print(permutation[x], Matrix[x])
+
+print("source: ", source)
     
 C = vector(3) #Step 1
 C.initialize(Matrix, source) # Step 2
